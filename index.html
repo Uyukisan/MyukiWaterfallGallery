@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="Stack Dev">
+	<meta name="copyright" content="Stack Dev">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+	<title>MyukiWaterfall Gallery</title>
+	<meta name="description" content="A waterfall flow gallery plugin created with love. 因爱制作的瀑布流画廊插件❤️">
+	<meta property="og:description" content="A waterfall flow gallery plugin created with love. 因爱制作的瀑布流画廊插件❤️">
+	<link rel="shortcut icon" href="https://stackblog.cf/img/logo.png">
+	<link rel="stylesheet" href="./css/MyukiWaterfallGallery.css">
+	<script src="./js/MyukiWaterfallGallery.js"></script>
+</head>
+
+<body>
+	<style>
+		.container {
+			width: 90%;
+			height: auto;
+			margin: 0 auto;
+		}
+	</style>
+	<div class="container">
+
+	</div>
+	<script>
+		let option = {
+			selector: ".container",
+			column: 1,
+			imgList: [],
+			viewWidth: "80%"
+		}
+		if (!isMobile() || isIPad()) {
+			option.column = 4;
+		}
+		const MWG = $MWG(option);
+		//获取远程画廊数据列表
+		fetch('https://source.stackblog.cf/api/gallery/').then(res => res.json()).then(data => {
+			let imgList = data['data'];
+			//演示图片加载失败
+			let len = imgList.length
+			//将其添加的列表随机位置
+			imgList.insert(randomNum(0, len - 1), {
+				"title": "Error demo",
+				"size": "404.404KB",
+				"width": "300",
+				"height": "400",
+				"url": "https://stackblog.cf/img/no_such_image.png",
+				"color": [112, 161, 255]
+			});
+			MWG.loadImgList(imgList);
+		}).catch(err => {
+			console.error(err);
+			console.info("API发生错误，请自行准备画廊列表数据");
+			alert("API发生错误，请自行准备画廊列表数据\n" + err);
+		}).finally(() => {
+			// document.querySelector(".kawaii-yukino").classList.add('hidden');
+		});
+		//在指定位置插入元素
+		Array.prototype.insert = function (index, ...items) {
+			this.splice(index, 0, ...items);
+		};
+
+		function randomNum(minNum, maxNum) {
+			switch (arguments.length) {
+				case 1:
+					return parseInt(Math.random() * minNum + 1, 10);
+					break;
+				case 2:
+					return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+					break;
+				default:
+					return 0;
+					break;
+			}
+		}
+
+		function isMobile() {
+			return /(iPhone|iPad|iPod|iOS|Android|Linux armv8l|Linux armv7l|Linux aarch64)/i.test(navigator.platform);
+		}
+		function isIPad() {
+			return /(iPad)/i.test(navigator.platform);
+		}
+	</script>
+</body>
+
+</html>
